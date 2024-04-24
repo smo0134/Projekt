@@ -109,5 +109,5 @@ def investicni_strategie(
     suma_mocnina = suma_mocnina_denni_vynosy(ceny, opak, obdobi, posun)
     stredni = stredni_vynosy(ceny, opak, obdobi, posun)
     riz = rizika(ceny, opak, obdobi, posun)
-    return denni
+    return denni, mocnina, suma, suma_mocnina, stredni, riz
 
