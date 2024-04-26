@@ -12,16 +12,8 @@ def nacist_data(nazev_souboru: str) -> NDArray[np.float64]:
     with open(nazev_souboru, "r") as soubor:
         for index, radek in enumerate(soubor):
             datum, hodnota = radek.split("\t")
-            ceny[index] = float(hodnota) 
+            ceny[index] = float(hodnota)
     return ceny
-
-
-def vyvoj_cen(ceny: NDArray[np.float64]):
-    plt.plot(ceny)
-    plt.xlabel("Čas")
-    plt.ylabel("Cena")
-    plt.title("Vývoj cen")
-    plt.show()
 
 
 def opakovani(pocet, obdobi, posun):
@@ -65,7 +57,7 @@ def suma_denni_vynosy(ceny, opakovani, obdobi, posun):
     return suma
 
 
-def suma_mocnina_denni_vynosy(ceny, opakovani, obdobi, posun):  
+def suma_mocnina_denni_vynosy(ceny, opakovani, obdobi, posun):
     suma_mocnina = np.zeros(opakovani)
     for k in range(opakovani):
         for i in range(obdobi - 1):
@@ -101,7 +93,7 @@ def rizika(ceny, opakovani, obdobi, posun):
             denominator = ceny[current_index]
             rizika[k] += ((ceny[next_index] - denominator) / denominator) ** 2
         rizika[k] = np.sqrt(
-            (1 / (obdobi - 1)) * rizika[k] - 
+            (1 / (obdobi - 1)) * rizika[k] -
             (1 / (obdobi * (obdobi - 1))) * rizika[k] ** 2
         )
     return rizika
@@ -119,3 +111,11 @@ def investicni_strategie(
     stredni = stredni_vynosy(ceny, opak, obdobi, posun)
     riz = rizika(ceny, opak, obdobi, posun)
     return denni, mocnina, suma, suma_mocnina, stredni, riz
+
+
+def vyvoj(ceny:NDArray[np.float64]):
+    plt.plot(ceny)
+    plt.xlabel("Čas")
+    plt.ylabel("Cena")
+    plt.title("Vývoj cen")
+    plt.show()
