@@ -3,6 +3,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.typing import NDArray
+from typing import List
 
 
 def nacist_data(nazev_souboru: str) -> NDArray[np.float64]:
@@ -111,7 +112,7 @@ def rizika(ceny, opakovani, obdobi, posun):
 def mesicni_rizika(rizika):
     mesicni_rizika = np.zeros(len(rizika))
     for i in range(len(rizika)):
-        mesicni_rizika[i] = rizika[i] * np.sqrt(21)
+        mesicni_rizika[i] = rizika[i] * np.sqrt(20)
     return mesicni_rizika
 
 
@@ -175,23 +176,44 @@ def korelace(
     return kor
 
 
+def tvorba_matice(
+    ceny: List[NDArray[np.float64]], obdobi: int, posun: int
+) -> List[NDArray[np.float64]]:
+    pocet = len(ceny)
+    a = int(np.sqrt(pocet))
+    opak = len(ceny[0])
+    vsechny_matice = []
+    for k in range(opak):
+        matice = np.zeros((a, a))
+        for i in range(a):
+            for j in range(a):
+                matice[i, j] = ceny[a*i+j][k]
+        vsechny_matice.append(matice)
+    return vsechny_matice
+
+
 def kovariancni_matice(
-        matice: NDArray[np.float64], obdobi: int, posun: int
-) -> NDArray[np.float64]:
-    pocet = len(matice)
-    matice_kovariance = np.zeros((pocet+1, pocet+1))
-    for i in range(pocet):
-        for j in range(pocet):
-            if i != pocet-1 or j != pocet-1:
-                matice_kovariance[i, j] = 2*matice[i, j]
-            elif i == pocet-1 or j == pocet-1:
-                matice_kovariance[i, j] = 1
-            elif i == pocet-1 and j == pocet-1:
-                matice_kovariance[i, j] = 0
-    return matice_kovariance
+        matice: List[NDArray[np.float64]], obdobi: int, posun: int
+) -> List[NDArray[np.float64]]:
+    pocet = len(matice[0])
+    velikost = len(matice)
+    vsechny_matice = []
+    for k in range(velikost):
+        matice_kovariance = np.zeros((pocet+1, pocet+1))
+        for i in range(pocet+1):
+            for j in range(pocet+1):
+                if i != pocet and j != pocet:
+                    matice_kovariance[i, j] = 2*matice[k][i, j]
+                else:
+                    matice_kovariance[i, j] = 1
+                if i == pocet and j == pocet:
+                    matice_kovariance[i, j] = 0
+        vsechny_matice.append(matice_kovariance)
+    return vsechny_matice
 
 
-def inverze(matice: NDArray[np.float64]) -> NDArray[np.float64]:
-    inverze = np.linalg.inv(matice)
-    return inverze
-
+def inverze(matice: List[NDArray[np.float64]]) -> List[NDArray[np.float64]]:
+    vsechny_matice = []
+    for i in range(len(matice)):
+        vsechny_matice.append(np.linalg.inv(matice[i]))
+    return vsechny_matice
