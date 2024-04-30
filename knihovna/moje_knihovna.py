@@ -16,6 +16,15 @@ def nacist_data(nazev_souboru: str) -> NDArray[np.float64]:
     return ceny
 
 
+def datum(nazev):
+    datum = []
+    with open(nazev, "r") as soubor:
+        for index, radek in enumerate(soubor):
+            cislo, _ = radek.split("\t")
+            datum.append(cislo)
+    return datum
+
+
 def opakovani(pocet, obdobi, posun):
     opakovani = 0
     while pocet > obdobi:
@@ -99,6 +108,13 @@ def rizika(ceny, opakovani, obdobi, posun):
     return rizika
 
 
+def mesicni_rizika(rizika):
+    mesicni_rizika = np.zeros(len(rizika))
+    for i in range(len(rizika)):
+        mesicni_rizika[i] = rizika[i] * np.sqrt(21)
+    return mesicni_rizika
+
+
 def investicni_strategie(
     ceny: NDArray[np.float64], obdobi: int, posun: int
 ) -> NDArray[np.float64]:
@@ -113,9 +129,69 @@ def investicni_strategie(
     return denni, mocnina, suma, suma_mocnina, stredni, riz
 
 
-def vyvoj(ceny:NDArray[np.float64]):
+def tisk(ceny: NDArray[np.float64], nazev: str) -> None:
     plt.plot(ceny)
     plt.xlabel("Čas")
     plt.ylabel("Cena")
-    plt.title("Vývoj cen")
+    plt.title(nazev + " vyvoj ceny")
+    plt.tight_layout()
     plt.show()
+
+
+def kovariance(
+    ceny1: NDArray[np.float64],
+    ceny2: NDArray[np.float64],
+    obdobi: int,
+    posun: int
+) -> NDArray[np.float64]:
+    d1, m1, s1, sm1, st1, r1 = investicni_strategie(ceny1, obdobi, posun)
+    d2, m2, s2, sm2, st2, r2 = investicni_strategie(ceny2, obdobi, posun)
+    mr1 = mesicni_rizika(r1)
+    mr2 = mesicni_rizika(r2)
+    opak = opakovani(len(ceny1), obdobi, posun)
+    kov = np.zeros(opak)
+    for k in range(opak):
+        kov[k] = (d1[:, k] @ d2[:, k])
+        kov[k] = (1 / (obdobi - 1)) * kov[k] - \
+                 (1 / (obdobi * (obdobi - 1))) * mr1[k] * mr2[k]
+    return kov
+
+
+def korelace(
+    ceny1: NDArray[np.float64],
+    ceny2: NDArray[np.float64],
+    obdobi: int,
+    posun: int
+) -> NDArray[np.float64]:
+    kov = kovariance(ceny1, ceny2, obdobi, posun)
+    d1, m1, s1, sm1, st1, r1 = investicni_strategie(ceny1, obdobi, posun)
+    d2, m2, s2, sm2, st2, r2 = investicni_strategie(ceny2, obdobi, posun)
+    mr1 = mesicni_rizika(r1)
+    mr2 = mesicni_rizika(r2)
+    opak = opakovani(len(ceny1), obdobi, posun)
+    kor = np.zeros(opak)
+    for k in range(opak):
+        kor[k] = kov[k] / (mr1[k] * mr2[k])
+    return kor
+
+
+def kovariancni_matice(
+        matice: NDArray[np.float64], obdobi: int, posun: int
+) -> NDArray[np.float64]:
+    pocet = len(matice)
+    matice_kovariance = np.zeros((pocet+1, pocet+1))
+    for i in range(pocet):
+        for j in range(pocet):
+            if i != pocet-1 or j != pocet-1:
+                matice_kovariance[i, j] = 2*matice[i, j]
+            elif i == pocet-1 or j == pocet-1:
+                matice_kovariance[i, j] = 1
+            elif i == pocet-1 and j == pocet-1:
+                matice_kovariance[i, j] = 0
+    return matice_kovariance
+
+
+def inverze(matice: NDArray[np.float64]) -> NDArray[np.float64]:
+    inverze = np.linalg.inv(matice)
+    return inverze
+
