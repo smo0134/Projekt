@@ -6,6 +6,7 @@ from numpy.typing import NDArray
 from typing import List
 
 
+# nacteni dat z textoveho souboru
 def nacist_data(nazev_souboru: str) -> NDArray[np.float64]:
     pocet_radku = sum(1 for _ in open(nazev_souboru))
     ceny = np.zeros(pocet_radku)
@@ -17,6 +18,7 @@ def nacist_data(nazev_souboru: str) -> NDArray[np.float64]:
     return ceny
 
 
+# zjistovani data
 def datum(nazev):
     datum = []
     with open(nazev, "r") as soubor:
@@ -26,6 +28,8 @@ def datum(nazev):
     return datum
 
 
+# zjistovani poctu opakovani, pro vypocty
+# aktivni/pasivni investicni strategie
 def opakovani(pocet, obdobi, posun):
     opakovani = 0
     while pocet > obdobi:
@@ -34,6 +38,7 @@ def opakovani(pocet, obdobi, posun):
     return opakovani
 
 
+# vypocet dennich vynosu
 def denni_vynosy(ceny, opakovani, obdobi, posun):
     denni_vynosy = np.zeros((obdobi - 1, opakovani))
     for k in range(opakovani):
@@ -45,6 +50,7 @@ def denni_vynosy(ceny, opakovani, obdobi, posun):
     return denni_vynosy
 
 
+# vypocet mocniny dennich vynosu
 def mocnina_denni_vynosy(ceny, opakovani, obdobi, posun):
     mocnina = np.zeros((obdobi - 1, opakovani))
     for k in range(opakovani):
@@ -114,6 +120,13 @@ def mesicni_rizika(rizika):
     for i in range(len(rizika)):
         mesicni_rizika[i] = rizika[i] * np.sqrt(20)
     return mesicni_rizika
+
+
+def mesicni_vynosy(stredni_vynosy):
+    mesicni_vynosy = np.zeros(len(stredni_vynosy))
+    for i in range(len(stredni_vynosy)):
+        mesicni_vynosy[i] = stredni_vynosy[i] * 20
+    return mesicni_vynosy
 
 
 def investicni_strategie(
@@ -217,3 +230,49 @@ def inverze(matice: List[NDArray[np.float64]]) -> List[NDArray[np.float64]]:
     for i in range(len(matice)):
         vsechny_matice.append(np.linalg.inv(matice[i]))
     return vsechny_matice
+
+
+def c(
+    inverze: List[NDArray[np.float64]],
+    obdobi: int,
+    posun: int
+) -> List[NDArray[np.float64]]:
+    c = []
+    for i in range(len(inverze)):
+        c.append(inverze[i][len(inverze[i])-1, :len(inverze[i])-1])
+    return c
+
+
+def optimalizace_vynos(
+    mesicnivynosy: List[NDArray[np.float64]],
+    c: List[NDArray[np.float64]]
+) -> NDArray[np.float64]:
+    optvynos = np.zeros(len(c))
+    for i in range(len(c)):
+        for j in range(len(c[i])):
+            optvynos[i] = optvynos[i] + c[i][j] * mesicnivynosy[j][i]
+    return optvynos
+
+
+def optimalizace_riziko(
+    matice: List[NDArray[np.float64]],
+    c: List[NDArray[np.float64]]
+) -> NDArray[np.float64]:
+    optriziko = np.zeros(len(c))
+    for i in range(len(c)):
+        for j in range(len(c[i])):
+            for k in range(len(c[i])):
+                optriziko[i] += c[i][j] * c[i][k] * matice[j][j, k]
+    return optriziko
+
+
+def d(
+    inverze: List[NDArray[np.float64]],
+    ms: List[NDArray[np.float64]],
+) -> NDArray[np.float64]:
+    d = np.zeros(len(inverze))
+    for i in range(len(inverze)):
+        for j in range(len(inverze[i])-1):
+            for k in range(len(inverze[i])-1):
+                d[i] += inverze[i][j, k] * ms[j][i] * ms[k][i]
+    return d
