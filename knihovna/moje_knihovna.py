@@ -276,3 +276,53 @@ def d(
             for k in range(len(inverze[i])-1):
                 d[i] += inverze[i][j, k] * ms[j][i] * ms[k][i]
     return d
+
+
+def di(
+    inverze: List[NDArray[np.float64]],
+    ms: List[NDArray[np.float64]], 
+) -> List[NDArray[np.float64]]:
+    di = []
+    for i in range(len(inverze)):
+        pole = np.zeros(len(ms))
+        for j in range(len(ms)):
+            for k in range(len(ms)):
+                pole[j] += inverze[i][j, k] * ms[k][i]
+        di.append(pole)
+    return di
+
+
+def par_vynos(
+    optvyn: NDArray[np.float64],
+    d: NDArray[np.float64],
+    vynos: float
+) -> NDArray[np.float64]:
+    parvyn = np.zeros(len(optvyn))
+    for i in range(len(optvyn)):
+        parvyn[i] = (optvyn[i] - vynos) / d[i]
+    return parvyn
+
+
+def vahy(
+    c: List[NDArray[np.float64]],
+    di: List[NDArray[np.float64]],
+    parvyn: NDArray[np.float64]
+) -> List[NDArray[np.float64]]:
+    vahy = []
+    for i in range(len(c)):
+        pole = np.zeros(len(c[i]))
+        for j in range(len(c[i])):
+            pole[j] = c[i][j] + di[i][j] * parvyn[i]
+        vahy.append(pole)
+    return vahy
+
+
+def par_riz(
+    optriz: NDArray[np.float64],
+    d: NDArray[np.float64],
+    riziko: float
+) -> NDArray[np.float64]:
+    parriz = np.zeros(len(optriz))
+    for i in range(len(optriz)):
+        parriz[i] = (2*(optriz[i] - riziko) / d[i])**2
+    return parriz
