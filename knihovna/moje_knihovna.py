@@ -32,7 +32,7 @@ def datum(nazev):
 # aktivni/pasivni investicni strategie
 def opakovani(pocet, obdobi, posun):
     opakovani = 0
-    while pocet > obdobi:
+    while pocet >= obdobi:
         pocet = pocet - posun
         opakovani = opakovani + 1
     return opakovani
@@ -136,11 +136,11 @@ def investicni_strategie(
     opak = opakovani(pocet, obdobi, posun)
     denni = denni_vynosy(ceny, opak, obdobi, posun)
     mocnina = mocnina_denni_vynosy(ceny, opak, obdobi, posun)
-    suma = suma_denni_vynosy(ceny, opak, obdobi, posun)
-    suma_mocnina = suma_mocnina_denni_vynosy(ceny, opak, obdobi, posun)
     stredni = stredni_vynosy(ceny, opak, obdobi, posun)
     riz = rizika(ceny, opak, obdobi, posun)
-    return denni, mocnina, suma, suma_mocnina, stredni, riz
+    mv = mesicni_vynosy(stredni)
+    mr = mesicni_rizika(riz)
+    return denni, mocnina, mv, mr, stredni, riz
 
 
 def tisk(ceny: NDArray[np.float64], nazev: str) -> None:
