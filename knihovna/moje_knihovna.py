@@ -7,16 +7,16 @@ from typing import List
 
 
 # nacteni dat z textoveho souboru
-"""
-    Načte data z textového souboru.
-
-    Args:
-        nazev_souboru (str): Název textového souboru obsahujícího data.
-
-    Returns:
-        NDArray[np.float64]: Pole obsahující ceny.
-"""
 def nacist_data(nazev_souboru: str) -> NDArray[np.float64]:
+    """
+        Načte data z textového souboru.
+
+        Args:
+            nazev_souboru (str): Název textového souboru obsahujícího data.
+
+        Returns:
+            NDArray[np.float64]: Pole obsahující ceny.
+    """
     pocet_radku = sum(1 for _ in open(nazev_souboru))
     ceny = np.zeros(pocet_radku)
 
@@ -28,16 +28,16 @@ def nacist_data(nazev_souboru: str) -> NDArray[np.float64]:
 
 
 # zjistovani data
-"""
-    Získá seznam dat z textového souboru.
-
-    Args:
-        nazev (str): Název textového souboru obsahujícího data.
-
-    Returns:
-        List[str]: Seznam dat.
-"""
 def datum(nazev):
+    """
+        Získá seznam dat z textového souboru.
+
+        Args:
+            nazev (str): Název textového souboru obsahujícího data.
+
+        Returns:
+            List[str]: Seznam dat.
+    """
     datum = []
     with open(nazev, "r") as soubor:
         for index, radek in enumerate(soubor):
@@ -48,38 +48,39 @@ def datum(nazev):
 
 # zjistovani poctu opakovani, pro vypocty
 # aktivni/pasivni investicni strategie
-"""
-    Zjistí počet opakování pro výpočty.
-
-    Args:
-        pocet (int): Celkový počet datových bodů.
-        obdobi (int): Délka období.
-        posun (int): Posun mezi obdobími.
-
-    Returns:
-        int: Počet opakování.
-"""
 def opakovani(pocet, obdobi, posun):
+    """
+        Zjistí počet opakování pro výpočty.
+
+        Args:
+            pocet (int): Celkový počet datových bodů.
+            obdobi (int): Délka období.
+            posun (int): Posun mezi obdobími.
+
+        Returns:
+            int: Počet opakování.
+    """
     opakovani = 0
     while pocet >= obdobi:
         pocet = pocet - posun
         opakovani = opakovani + 1
     return opakovani
 
-"""
-    Vypočítá denní výnosy.
 
-    Args:
-        ceny (NDArray[np.float64]): Pole obsahující ceny.
-        opakovani (int): Počet opakování.
-        obdobi (int): Délka období.
-        posun (int): Posun mezi obdobími.
-
-    Returns:
-        NDArray[np.float64]: Pole obsahující denní výnosy.
-"""
 # vypocet dennich vynosu
 def denni_vynosy(ceny, opakovani, obdobi, posun):
+    """
+        Vypočítá denní výnosy.
+
+        Args:
+            ceny (NDArray[np.float64]): Pole obsahující ceny.
+            opakovani (int): Počet opakování.
+            obdobi (int): Délka období.
+            posun (int): Posun mezi obdobími.
+
+        Returns:
+            NDArray[np.float64]: Pole obsahující denní výnosy.
+    """
     denni_vynosy = np.zeros((obdobi - 1, opakovani))
     for k in range(opakovani):
         for i in range(obdobi - 1):
@@ -89,20 +90,21 @@ def denni_vynosy(ceny, opakovani, obdobi, posun):
             denni_vynosy[i, k] = (ceny[next_index] - denominator) / denominator
     return denni_vynosy
 
-"""
-    Vypočítá mocniny denních výnosů.
 
-    Args:
-        ceny (NDArray[np.float64]): Pole obsahující ceny.
-        opakovani (int): Počet opakování.
-        obdobi (int): Délka období.
-        posun (int): Posun mezi obdobími.
-
-    Returns:
-        NDArray[np.float64]: Pole obsahující mocniny denních výnosů.
-"""
 # vypocet mocniny dennich vynosu
 def mocnina_denni_vynosy(ceny, opakovani, obdobi, posun):
+    """
+        Vypočítá mocniny denních výnosů.
+
+        Args:
+            ceny (NDArray[np.float64]): Pole obsahující ceny.
+            opakovani (int): Počet opakování.
+            obdobi (int): Délka období.
+            posun (int): Posun mezi obdobími.
+
+        Returns:
+            NDArray[np.float64]: Pole obsahující mocniny denních výnosů.
+    """
     mocnina = np.zeros((obdobi - 1, opakovani))
     for k in range(opakovani):
         for i in range(obdobi - 1):
@@ -112,19 +114,20 @@ def mocnina_denni_vynosy(ceny, opakovani, obdobi, posun):
             mocnina[i, k] = ((ceny[next_index]-denominator)/denominator)**2
     return mocnina
 
-"""
-    Vypočítá sumu denních výnosů.
 
-    Args:
-        ceny (NDArray[np.float64]): Pole obsahující ceny.
-        opakovani (int): Počet opakování.
-        obdobi (int): Délka období.
-        posun (int): Posun mezi obdobími.
-
-    Returns:
-        NDArray[np.float64]: Pole obsahující sumu denních výnosů.
-"""
 def suma_denni_vynosy(ceny, opakovani, obdobi, posun):
+    """
+        Vypočítá sumu denních výnosů.
+
+        Args:
+            ceny (NDArray[np.float64]): Pole obsahující ceny.
+            opakovani (int): Počet opakování.
+            obdobi (int): Délka období.
+            posun (int): Posun mezi obdobími.
+
+        Returns:
+            NDArray[np.float64]: Pole obsahující sumu denních výnosů.
+    """
     suma = np.zeros(opakovani)
     for k in range(opakovani):
         for i in range(obdobi - 1):
@@ -134,19 +137,20 @@ def suma_denni_vynosy(ceny, opakovani, obdobi, posun):
             suma[k] += ((ceny[next_index] - denominator) / denominator)
     return suma
 
-"""
-    Vypočítá sumu mocnin denních výnosů.
 
-    Args:
-        ceny (NDArray[np.float64]): Pole obsahující ceny.
-        opakovani (int): Počet opakování.
-        obdobi (int): Délka období.
-        posun (int): Posun mezi obdobími.
-
-    Returns:
-        NDArray[np.float64]: Pole obsahující sumu mocnin denních výnosů.
-"""
 def suma_mocnina_denni_vynosy(ceny, opakovani, obdobi, posun):
+    """
+        Vypočítá sumu mocnin denních výnosů.
+
+        Args:
+            ceny (NDArray[np.float64]): Pole obsahující ceny.
+            opakovani (int): Počet opakování.
+            obdobi (int): Délka období.
+            posun (int): Posun mezi obdobími.
+
+        Returns:
+            NDArray[np.float64]: Pole obsahující sumu mocnin denních výnosů.
+    """
     suma_mocnina = np.zeros(opakovani)
     for k in range(opakovani):
         for i in range(obdobi - 1):
@@ -158,19 +162,20 @@ def suma_mocnina_denni_vynosy(ceny, opakovani, obdobi, posun):
             )
     return suma_mocnina
 
-"""
-    Vypočítá střední výnosy.
 
-    Args:
-        ceny (NDArray[np.float64]): Pole obsahující ceny.
-        opakovani (int): Počet opakování.
-        obdobi (int): Délka období.
-        posun (int): Posun mezi obdobími.
-
-    Returns:
-        NDArray[np.float64]: Pole obsahující střední výnosy.
-"""
 def stredni_vynosy(ceny, opakovani, obdobi, posun):
+    """
+        Vypočítá střední výnosy.
+
+        Args:
+            ceny (NDArray[np.float64]): Pole obsahující ceny.
+            opakovani (int): Počet opakování.
+            obdobi (int): Délka období.
+            posun (int): Posun mezi obdobími.
+
+        Returns:
+            NDArray[np.float64]: Pole obsahující střední výnosy.
+    """
     stredni_vynosy = np.zeros(opakovani)
     for k in range(opakovani):
         for i in range(obdobi - 1):
@@ -183,19 +188,20 @@ def stredni_vynosy(ceny, opakovani, obdobi, posun):
         stredni_vynosy[k] = (1 / obdobi) * stredni_vynosy[k]
     return stredni_vynosy
 
-"""
-    Vypočítá rizika.
 
-    Args:
-        ceny (NDArray[np.float64]): Pole obsahující ceny.
-        opakovani (int): Počet opakování.
-        obdobi (int): Délka období.
-        posun (int): Posun mezi obdobími.
-
-    Returns:
-        NDArray[np.float64]: Pole obsahující rizika.
-"""
 def rizika(ceny, opakovani, obdobi, posun):
+    """
+        Vypočítá rizika.
+
+        Args:
+            ceny (NDArray[np.float64]): Pole obsahující ceny.
+            opakovani (int): Počet opakování.
+            obdobi (int): Délka období.
+            posun (int): Posun mezi obdobími.
+
+        Returns:
+            NDArray[np.float64]: Pole obsahující rizika.
+    """
     rizika = np.zeros(opakovani)
     for k in range(opakovani):
         for i in range(obdobi - 1):
@@ -209,50 +215,56 @@ def rizika(ceny, opakovani, obdobi, posun):
         )
     return rizika
 
-"""
-    Vypočítá měsíční rizika.
 
-    Args:
-        rizika (NDArray[np.float64]): Pole obsahující rizika.
-
-    Returns:
-        NDArray[np.float64]: Pole obsahující měsíční rizika.
-"""
 def mesicni_rizika(rizika):
+    """
+        Vypočítá měsíční rizika.
+
+        Args:
+            rizika (NDArray[np.float64]): Pole obsahující rizika.
+
+        Returns:
+            NDArray[np.float64]: Pole obsahující měsíční rizika.
+    """
     mesicni_rizika = np.zeros(len(rizika))
     for i in range(len(rizika)):
         mesicni_rizika[i] = rizika[i] * np.sqrt(20)
     return mesicni_rizika
 
-"""
-    Vypočítá měsíční výnosy.
 
-    Args:
-        stredni_vynosy (NDArray[np.float64]): Pole obsahující střední výnosy.
-
-    Returns:
-        NDArray[np.float64]: Pole obsahující měsíční výnosy.
-"""
 def mesicni_vynosy(stredni_vynosy):
+    """
+        Vypočítá měsíční výnosy.
+
+        Args:
+            stredni_vynosy (NDArray[np.float64]):
+            Pole obsahující střední výnosy.
+
+        Returns:
+            NDArray[np.float64]: Pole obsahující měsíční výnosy.
+    """
     mesicni_vynosy = np.zeros(len(stredni_vynosy))
     for i in range(len(stredni_vynosy)):
         mesicni_vynosy[i] = stredni_vynosy[i] * 20
     return mesicni_vynosy
 
-"""
-    Vypočítá investiční strategii.
 
-    Args:
-        ceny (NDArray[np.float64]): Pole obsahující ceny.
-        obdobi (int): Délka období.
-        posun (int): Posun mezi obdobími.
-
-    Returns:
-        List[NDArray[np.float64]]: Seznam obsahující denní výnosy, mocniny denních výnosů, měsíční výnosy, měsíční rizika, střední výnosy a rizika.
-"""
 def investicni_strategie(
     ceny: NDArray[np.float64], obdobi: int, posun: int
 ) -> NDArray[np.float64]:
+    """
+        Vypočítá investiční strategii.
+
+        Args:
+            ceny (NDArray[np.float64]): Pole obsahující ceny.
+            obdobi (int): Délka období.
+            posun (int): Posun mezi obdobími.
+
+        Returns:
+            List[NDArray[np.float64]]: Seznam obsahující denní výnosy,
+            mocniny dennich výnosů,
+            měsíční výnosy, měsíční rizika, střední výnosy a rizika.
+    """
     pocet = len(ceny)
     opak = opakovani(pocet, obdobi, posun)
     denni = denni_vynosy(ceny, opak, obdobi, posun)
@@ -263,14 +275,15 @@ def investicni_strategie(
     mr = mesicni_rizika(riz)
     return denni, mocnina, mv, mr, stredni, riz
 
-"""
-    Vytvoří graf vývoje ceny.
 
-    Args:
-        ceny (NDArray[np.float64]): Pole obsahující ceny.
-        nazev (str): Název grafu.
-"""
 def tisk(ceny: NDArray[np.float64], nazev: str) -> None:
+    """
+        Vytvoří graf vývoje ceny.
+
+        Args:
+            ceny (NDArray[np.float64]): Pole obsahující ceny.
+            nazev (str): Název grafu.
+    """
     plt.plot(ceny)
     plt.xlabel("Čas")
     plt.ylabel("Cena")
@@ -278,24 +291,25 @@ def tisk(ceny: NDArray[np.float64], nazev: str) -> None:
     plt.tight_layout()
     plt.show()
 
-"""
-    Vypočítá kovarianci mezi dvěma sadami cen.
 
-    Args:
-        ceny1 (NDArray[np.float64]): První pole obsahující ceny.
-        ceny2 (NDArray[np.float64]): Druhé pole obsahující ceny.
-        obdobi (int): Délka období.
-        posun (int): Posun mezi obdobími.
-
-    Returns:
-        NDArray[np.float64]: Pole obsahující kovarianci.
-"""
 def kovariance(
     ceny1: NDArray[np.float64],
     ceny2: NDArray[np.float64],
     obdobi: int,
     posun: int
 ) -> NDArray[np.float64]:
+    """
+        Vypočítá kovarianci mezi dvěma sadami cen.
+
+        Args:
+            ceny1 (NDArray[np.float64]): První pole obsahující ceny.
+            ceny2 (NDArray[np.float64]): Druhé pole obsahující ceny.
+            obdobi (int): Délka období.
+            posun (int): Posun mezi obdobími.
+
+        Returns:
+            NDArray[np.float64]: Pole obsahující kovarianci.
+    """
     d1, m1, s1, sm1, st1, r1 = investicni_strategie(ceny1, obdobi, posun)
     d2, m2, s2, sm2, st2, r2 = investicni_strategie(ceny2, obdobi, posun)
     mr1 = mesicni_rizika(r1)
@@ -308,24 +322,25 @@ def kovariance(
                  (1 / (obdobi * (obdobi - 1))) * mr1[k] * mr2[k]
     return kov
 
-"""
-    Vypočítá korelaci mezi dvěma sadami cen.
 
-    Args:
-        ceny1 (NDArray[np.float64]): První pole obsahující ceny.
-        ceny2 (NDArray[np.float64]): Druhé pole obsahující ceny.
-        obdobi (int): Délka období.
-        posun (int): Posun mezi obdobími.
-
-    Returns:
-        NDArray[np.float64]: Pole obsahující korelaci.
-"""
 def korelace(
     ceny1: NDArray[np.float64],
     ceny2: NDArray[np.float64],
     obdobi: int,
     posun: int
 ) -> NDArray[np.float64]:
+    """
+        Vypočítá korelaci mezi dvěma sadami cen.
+
+        Args:
+            ceny1 (NDArray[np.float64]): První pole obsahující ceny.
+            ceny2 (NDArray[np.float64]): Druhé pole obsahující ceny.
+            obdobi (int): Délka období.
+            posun (int): Posun mezi obdobími.
+
+        Returns:
+            NDArray[np.float64]: Pole obsahující korelaci.
+    """
     kov = kovariance(ceny1, ceny2, obdobi, posun)
     d1, m1, s1, sm1, st1, r1 = investicni_strategie(ceny1, obdobi, posun)
     d2, m2, s2, sm2, st2, r2 = investicni_strategie(ceny2, obdobi, posun)
@@ -391,40 +406,42 @@ def c(
         c.append(inverze[i][len(inverze[i])-1, :len(inverze[i])-1])
     return c
 
-"""
-    Vypočítá optimalizované výnosy.
 
-    Args:
-        mesicnivynosy (List[NDArray[np.float64]]): Seznam měsíčních výnosů.
-        c (List[NDArray[np.float64]]): Seznam hodnot c.
-
-    Returns:
-        NDArray[np.float64]: Pole obsahující optimalizované výnosy.
-"""
 def optimalizace_vynos(
     mesicnivynosy: List[NDArray[np.float64]],
     c: List[NDArray[np.float64]]
 ) -> NDArray[np.float64]:
+    """
+        Vypočítá optimalizované výnosy.
+
+        Args:
+            mesicnivynosy (List[NDArray[np.float64]]): Seznam měsíčních výnosů.
+            c (List[NDArray[np.float64]]): Seznam hodnot c.
+
+        Returns:
+            NDArray[np.float64]: Pole obsahující optimalizované výnosy.
+    """
     optvynos = np.zeros(len(c))
     for i in range(len(c)):
         for j in range(len(c[i])):
             optvynos[i] = optvynos[i] + c[i][j] * mesicnivynosy[j][i]
     return optvynos
 
-"""
-    Vypočítá optimalizovaná rizika.
 
-    Args:
-        mesicnirizika (List[NDArray[np.float64]]): Seznam měsíčních rizik.
-        c (List[NDArray[np.float64]]): Seznam hodnot c.
-
-    Returns:
-        NDArray[np.float64]: Pole obsahující optimalizovaná rizika.
-"""
 def optimalizace_riziko(
     matice: List[NDArray[np.float64]],
     c: List[NDArray[np.float64]]
 ) -> NDArray[np.float64]:
+    """
+        Vypočítá optimalizovaná rizika.
+
+        Args:
+            mesicnirizika (List[NDArray[np.float64]]): Seznam měsíčních rizik.
+            c (List[NDArray[np.float64]]): Seznam hodnot c.
+
+        Returns:
+            NDArray[np.float64]: Pole obsahující optimalizovaná rizika.
+    """
     optriziko = np.zeros(len(c))
     for i in range(len(c)):
         for j in range(len(c[i])):
@@ -447,7 +464,7 @@ def d(
 
 def di(
     inverze: List[NDArray[np.float64]],
-    ms: List[NDArray[np.float64]], 
+    ms: List[NDArray[np.float64]],
 ) -> List[NDArray[np.float64]]:
     di = []
     for i in range(len(inverze)):
@@ -484,6 +501,23 @@ def vahy(
     return vahy
 
 
+def riziko_dan(
+        váhy: List[NDArray[np.float64]],
+        matice: List[NDArray[np.float64]]
+) -> NDArray[np.float64]:
+    rizikodan = np.zeros(len(váhy))
+    for i in range(len(váhy)):
+        sum1 = 0
+        sum2 = 0
+        for j in range(len(váhy[i])):
+            sum1 += (váhy[i][j]**2) * (matice[i][j, j]**2)
+        for k in range(len(váhy[i])-1):
+            for m in range(k+1, len(váhy[i])):
+                sum2 += váhy[i][k] * váhy[i][m] * matice[i][k, m]
+        rizikodan[i] = np.sqrt(sum1 - 2*sum2)
+    return rizikodan
+
+
 def par_riz(
     optriz: NDArray[np.float64],
     d: NDArray[np.float64],
@@ -493,3 +527,14 @@ def par_riz(
     for i in range(len(optriz)):
         parriz[i] = (2*(optriz[i] - riziko) / d[i])**2
     return parriz
+
+
+def vynos_dan(
+    váhy: List[NDArray[np.float64]],
+    vynosy: List[NDArray[np.float64]]
+) -> NDArray[np.float64]:
+    vynosdan = np.zeros(len(váhy))
+    for i in range(len(váhy)):
+        for j in range(len(váhy[i])):
+            vynosdan[i] += váhy[i][j] * vynosy[j][i]
+    return vynosdan
