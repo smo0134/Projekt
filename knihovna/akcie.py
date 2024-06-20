@@ -4,7 +4,6 @@ import numpy as np
 from numpy.typing import NDArray
 
 
-# nacteni dat z textoveho souboru
 def nacist_data(nazev_souboru: str) -> NDArray[np.float64]:
     """
         Načte data z textového souboru.
@@ -25,8 +24,6 @@ def nacist_data(nazev_souboru: str) -> NDArray[np.float64]:
     return ceny
 
 
-# zjistovani poctu opakovani, pro vypocty
-# aktivni/pasivni investicni strategie
 def opakovani(pocet, obdobi, posun):
     """
         Zjistí počet opakování pro výpočty.
@@ -46,7 +43,6 @@ def opakovani(pocet, obdobi, posun):
     return opakovani
 
 
-# vypocet dennich vynosu
 def denni_vynosy(ceny, opakovani, obdobi, posun):
     """
         Vypočítá denní výnosy.
@@ -70,7 +66,6 @@ def denni_vynosy(ceny, opakovani, obdobi, posun):
     return denni_vynosy
 
 
-# vypocet mocniny dennich vynosu
 def mocnina_denni_vynosy(ceny, opakovani, obdobi, posun):
     """
         Vypočítá mocniny denních výnosů.
@@ -92,54 +87,6 @@ def mocnina_denni_vynosy(ceny, opakovani, obdobi, posun):
             denominator = ceny[current_index]
             mocnina[i, k] = ((ceny[next_index]-denominator)/denominator)**2
     return mocnina
-
-
-def suma_denni_vynosy(ceny, opakovani, obdobi, posun):
-    """
-        Vypočítá sumu denních výnosů.
-
-        Args:
-            ceny (NDArray[np.float64]): Pole obsahující ceny.
-            opakovani (int): Počet opakování.
-            obdobi (int): Délka období.
-            posun (int): Posun mezi obdobími.
-
-        Returns:
-            NDArray[np.float64]: Pole obsahující sumu denních výnosů.
-    """
-    suma = np.zeros(opakovani)
-    for k in range(opakovani):
-        for i in range(obdobi - 1):
-            current_index = k * posun + i
-            next_index = (i + 1) + k * posun
-            denominator = ceny[current_index]
-            suma[k] += ((ceny[next_index] - denominator) / denominator)
-    return suma
-
-
-def suma_mocnina_denni_vynosy(ceny, opakovani, obdobi, posun):
-    """
-        Vypočítá sumu mocnin denních výnosů.
-
-        Args:
-            ceny (NDArray[np.float64]): Pole obsahující ceny.
-            opakovani (int): Počet opakování.
-            obdobi (int): Délka období.
-            posun (int): Posun mezi obdobími.
-
-        Returns:
-            NDArray[np.float64]: Pole obsahující sumu mocnin denních výnosů.
-    """
-    suma_mocnina = np.zeros(opakovani)
-    for k in range(opakovani):
-        for i in range(obdobi - 1):
-            current_index = k * posun + i
-            next_index = (i + 1) + k * posun
-            denominator = ceny[current_index]
-            suma_mocnina[k] += (
-                ((ceny[next_index] - denominator) / denominator) ** 2
-            )
-    return suma_mocnina
 
 
 def stredni_vynosy(ceny, opakovani, obdobi, posun):

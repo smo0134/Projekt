@@ -9,6 +9,15 @@ import os
 
 def tisk_grafu(x: NDArray, nazev: str,
                popisky: List[str], slozka: str) -> None:
+    """
+        Vytiskne spojnicový graf.
+
+        Args:
+            x (NDArray): Pole hodnot.
+            nazev (str): Název grafu.
+            popisky (List[str]): Popisky os.
+            slozka (str): Cesta ke slozce, kde chceme uložit graf.
+    """
     plt.plot(x)
     plt.xlabel(popisky[0])
     plt.ylabel(popisky[1])
@@ -22,6 +31,16 @@ def tisk_grafu(x: NDArray, nazev: str,
 
 def tisk_grafu_sloupec(x: NDArray, nazev: str,
                        popisky: List[str], slozka: str) -> None:
+    """
+        Vytiskne sloupcový graf.
+
+        Args:
+            x (NDArray): Pole hodnot.
+            nazev (str): Název grafu.
+            popisky (List[str]): Popisky os.
+            slozka (str): Cesta ke slozce, kde chceme uložit graf.
+
+    """
     indexy = np.arange(len(x))
     plt.bar(indexy, x)
     plt.xlabel(popisky[0])
