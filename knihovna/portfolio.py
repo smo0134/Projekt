@@ -1,6 +1,6 @@
 
 
-import akcie
+from . import akcie
 import numpy as np
 from numpy.typing import NDArray
 from typing import List
@@ -89,7 +89,7 @@ def tvorba_matice(
         matice = np.zeros((a, a))
         for i in range(a):
             for j in range(a):
-                matice[i, j] = kovariance[a*i+j][k]
+                matice[i, j] = kovariance[a * i + j][k]
         vsechny_matice.append(matice)
     return vsechny_matice
 
@@ -113,11 +113,11 @@ def kovariancni_matice(
     velikost = len(matice)
     vsechny_matice = []
     for k in range(velikost):
-        matice_kovariance = np.zeros((pocet+1, pocet+1))
-        for i in range(pocet+1):
-            for j in range(pocet+1):
+        matice_kovariance = np.zeros((pocet + 1, pocet + 1))
+        for i in range(pocet + 1):
+            for j in range(pocet + 1):
                 if i != pocet and j != pocet:
-                    matice_kovariance[i, j] = 2*matice[k][i, j]
+                    matice_kovariance[i, j] = 2 * matice[k][i, j]
                 else:
                     matice_kovariance[i, j] = 1
                 if i == pocet and j == pocet:
@@ -164,7 +164,7 @@ def c(
     """
     c = []
     for i in range(len(inverze)):
-        c.append(inverze[i][len(inverze[i])-1, :len(inverze[i])-1])
+        c.append(inverze[i][len(inverze[i]) - 1, :len(inverze[i]) - 1])
     return c
 
 
@@ -228,8 +228,8 @@ def d(
     """
     d = np.zeros(len(inverze))
     for i in range(len(inverze)):
-        for j in range(len(inverze[i])-1):
-            for k in range(len(inverze[i])-1):
+        for j in range(len(inverze[i]) - 1):
+            for k in range(len(inverze[i]) - 1):
                 d[i] += inverze[i][j, k] * ms[j][i] * ms[k][i]
     return d
 
@@ -328,10 +328,10 @@ def riziko_dan(
         sum2 = 0
         for j in range(len(vahy[i])):
             sum1 += (vahy[i][j]**2) * (matice[i][j, j]**2)
-        for k in range(len(vahy[i])-1):
-            for m in range(k+1, len(vahy[i])):
+        for k in range(len(vahy[i]) - 1):
+            for m in range(k + 1, len(vahy[i])):
                 sum2 += vahy[i][k] * vahy[i][m] * matice[i][k, m]
-        rizikodan[i] = np.sqrt(sum1 - 2*sum2)
+        rizikodan[i] = np.sqrt(sum1 - 2 * sum2)
     return rizikodan
 
 
@@ -355,7 +355,7 @@ def par_riz(
     """
     parriz = np.zeros(len(optriz))
     for i in range(len(optriz)):
-        parriz[i] = (2*(optriz[i] - riziko) / d[i])**2
+        parriz[i] = (2 * (optriz[i] - riziko) / d[i])**2
     return parriz
 
 
